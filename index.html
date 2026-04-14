@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yazılım Ölecek mi? — Bir Konuşma</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-alt: #f5f6f8;
+    --border: #e2e5ea;
+    --text: #0b0d12;
+    --text-dim: #6b7280;
+    --text-soft: #2d333f;
+    --accent: #2563eb;
+    --accent-2: #db2777;
+    --warn: #b45309;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+    overflow: hidden;
+  }
+  #deck {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+  }
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 5vh 6vw;
+    text-align: center;
+    animation: fadeIn 0.35s ease;
+  }
+  .slide.active { display: flex; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Typography */
+  h1 {
+    font-size: clamp(2.4rem, 5.5vw, 4.5rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+  h2 {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+  }
+  h3 {
+    font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+    font-weight: 500;
+    color: var(--text-soft);
+    margin-bottom: 2rem;
+  }
+  p, li {
+    font-size: clamp(1rem, 1.8vw, 1.5rem);
+    line-height: 1.55;
+    color: var(--text-soft);
+    max-width: 70ch;
+  }
+  p + p { margin-top: 1rem; }
+  strong { color: var(--text); font-weight: 700; }
+  em { color: var(--accent); font-style: normal; font-weight: 600; }
+  code {
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    padding: 0.1em 0.4em;
+    border-radius: 4px;
+    font-family: 'SF Mono', 'Menlo', monospace;
+    font-size: 0.9em;
+    color: var(--accent);
+  }
+  blockquote {
+    border-left: 3px solid var(--accent);
+    padding-left: 1.2rem;
+    margin: 1.5rem 0;
+    font-size: clamp(1.1rem, 2.2vw, 1.8rem);
+    font-weight: 500;
+    color: var(--text);
+    max-width: 70ch;
+    text-align: left;
+    font-style: italic;
+  }
+  ul {
+    text-align: left;
+    max-width: 60ch;
+    list-style: none;
+  }
+  ul li {
+    padding: 0.4rem 0;
+    position: relative;
+    padding-left: 1.5rem;
+  }
+  ul li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  ol {
+    text-align: left;
+    max-width: 60ch;
+    counter-reset: item;
+    list-style: none;
+  }
+  ol li {
+    padding: 0.5rem 0;
+    padding-left: 2rem;
+    position: relative;
+    counter-increment: item;
+  }
+  ol li::before {
+    content: counter(item);
+    position: absolute;
+    left: 0;
+    top: 0.7rem;
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 0.9em;
+  }
+  table {
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: clamp(0.85rem, 1.4vw, 1.1rem);
+  }
+  th, td {
+    border-bottom: 1px solid var(--border);
+    padding: 0.6rem 1rem;
+    text-align: left;
+  }
+  th {
+    color: var(--text-dim);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8em;
+    letter-spacing: 0.05em;
+  }
+
+  img, svg {
+    max-width: 90%;
+    max-height: 65vh;
+    border-radius: 8px;
+  }
+  .graph-slide img {
+    max-height: 75vh;
+    background: #0f1115;
+    padding: 1rem;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+  }
+
+  .big {
+    font-size: clamp(2rem, 6vw, 5rem);
+    font-weight: 800;
+    color: var(--accent);
+    margin: 1rem 0;
+    line-height: 1.1;
+  }
+
+  .pink { color: var(--accent-2); }
+  .warn { color: var(--warn); }
+  .dim { color: var(--text-dim); }
+  .subtle {
+    font-size: 1rem;
+    color: var(--text-dim);
+    margin-top: 2rem;
+    max-width: 55ch;
+  }
+  .book {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 1rem;
+  }
+  .book img {
+    max-height: 45vh;
+    border-radius: 6px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  }
+  .book-info { text-align: left; }
+
+  /* UI */
+  .nav {
+    position: fixed;
+    bottom: 1.2rem;
+    right: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    z-index: 10;
+  }
+  .nav button {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text-soft);
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.15s;
+  }
+  .nav button:hover {
+    background: var(--bg-alt);
+    color: var(--text);
+    border-color: var(--accent);
+  }
+  .counter {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+  }
+  .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: var(--accent);
+    transition: width 0.3s ease;
+    z-index: 10;
+  }
+  .hint {
+    position: fixed;
+    bottom: 1.2rem;
+    left: 1.5rem;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    z-index: 10;
+  }
+  kbd {
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    border-bottom-width: 2px;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 0.8em;
+    color: var(--text-soft);
+  }
+
+  /* Special slide variants */
+  .hero h1 { font-size: clamp(3rem, 8vw, 7rem); }
+  .quote-slide blockquote {
+    font-size: clamp(1.5rem, 3.5vw, 2.8rem);
+    border: none;
+    text-align: center;
+    padding: 0;
+    max-width: 85%;
+  }
+  .meme-row {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+  .meme-big {
+    max-height: 70vh !important;
+    max-width: 80vw !important;
+    border-radius: 10px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+    margin: 1.5rem 0;
+  }
+  .meme-row img {
+    max-height: 35vh;
+    max-width: 28vw;
+    border-radius: 8px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  }
+  .pack-layout {
+    display: flex;
+    align-items: center;
+    gap: 5vw;
+    width: 100%;
+    max-width: 1400px;
+    justify-content: space-between;
+  }
+  .pack-left {
+    flex: 1 1 55%;
+    text-align: left;
+  }
+  .pack-header {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+  .gh-logo {
+    width: clamp(60px, 5.5vw, 85px);
+    height: auto;
+    max-height: none;
+    border-radius: 0;
+  }
+  .pack-left table {
+    margin: 0;
+    font-size: clamp(0.95rem, 1.5vw, 1.25rem);
+  }
+  .pack-left h1 {
+    font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+    margin: 0;
+  }
+  .qr-block {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  .qr-block img {
+    width: clamp(260px, 32vw, 460px);
+    height: auto;
+    max-height: none;
+    border: 8px solid var(--bg-alt);
+    border-radius: 12px;
+    background: #fff;
+    padding: 10px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+  }
+  .qr-block code {
+    font-size: clamp(0.9rem, 1.3vw, 1.15rem);
+  }
+  /* DVD screensaver slide */
+  .dvd-slide {
+    background: #000;
+    padding: 0 !important;
+    overflow: hidden;
+  }
+  #dvd-text {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    color: #ff5e8a;
+    white-space: nowrap;
+    user-select: none;
+    pointer-events: none;
+    will-change: transform;
+    padding: 0.4em 0.8em;
+  }
+
+  /* Flying English reminder */
+  #flyer {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #0b0d12;
+    color: #fff;
+    padding: 1.3rem 2.4rem;
+    border-radius: 999px;
+    font-size: clamp(1.6rem, 3vw, 2.6rem);
+    font-weight: 700;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+    pointer-events: none;
+    z-index: 1000;
+    white-space: nowrap;
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+  #flyer.visible { opacity: 1; }
+  #flyer .accent { color: #ff5e8a; }
+
+  @keyframes fly-diag {
+    0%   { transform: translate(-150vw, -150vh) rotate(-25deg); opacity: 0; }
+    15%  { opacity: 1; }
+    50%  { transform: translate(-50%, -50%) rotate(0deg); opacity: 1; }
+    85%  { opacity: 1; }
+    100% { transform: translate(150vw, 150vh) rotate(25deg); opacity: 0; }
+  }
+  @keyframes fly-sweep {
+    0%   { transform: translate(-150vw, -50%); opacity: 0; }
+    15%  { opacity: 1; }
+    45%  { transform: translate(-50%, -50%); }
+    60%  { transform: translate(-50%, -50%); }
+    100% { transform: translate(150vw, -50%); opacity: 0; }
+  }
+  @keyframes fly-drop {
+    0%   { transform: translate(-50%, -200vh) rotate(0); opacity: 0; }
+    20%  { opacity: 1; }
+    60%  { transform: translate(-50%, -50%) rotate(0); }
+    70%  { transform: translate(-50%, -45%) rotate(-4deg); }
+    80%  { transform: translate(-50%, -52%) rotate(4deg); }
+    90%  { transform: translate(-50%, -50%) rotate(0); opacity: 1; }
+    100% { transform: translate(-50%, 150vh) rotate(15deg); opacity: 0; }
+  }
+  @keyframes fly-spiral {
+    0%   { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; }
+    40%  { transform: translate(-50%, -50%) scale(1) rotate(720deg); opacity: 1; }
+    70%  { transform: translate(-50%, -50%) scale(1) rotate(720deg); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(0) rotate(1440deg); opacity: 0; }
+  }
+  @keyframes fly-bounce {
+    0%   { transform: translate(-50%, 150vh); opacity: 0; }
+    20%  { transform: translate(-50%, -55%); opacity: 1; }
+    35%  { transform: translate(-50%, -45%); }
+    50%  { transform: translate(-50%, -52%); }
+    65%  { transform: translate(-50%, -48%); }
+    80%  { transform: translate(-50%, -50%); opacity: 1; }
+    100% { transform: translate(-50%, -50%); opacity: 0; }
+  }
+  @keyframes fly-shake {
+    0%   { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+    15%  { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+    25%  { transform: translate(-48%, -50%); }
+    35%  { transform: translate(-52%, -50%); }
+    45%  { transform: translate(-48%, -51%); }
+    55%  { transform: translate(-52%, -49%); }
+    65%  { transform: translate(-50%, -50%); }
+    100% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+  }
+  @keyframes fly-loop {
+    0%   { transform: translate(-150vw, 50vh) rotate(0deg); opacity: 0; }
+    10%  { opacity: 1; }
+    50%  { transform: translate(-50%, -50%) rotate(360deg); opacity: 1; }
+    90%  { opacity: 1; }
+    100% { transform: translate(150vw, -50vh) rotate(720deg); opacity: 0; }
+  }
+
+  .slide.remove-mark::before {
+    content: 'SİLİNECEK';
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: #dc2626;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    z-index: 5;
+  }
+  .slide.remove-mark {
+    outline: 3px dashed #dc2626;
+    outline-offset: -12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<div id="deck">
+
+  <!-- 0. Boş açılış -->
+  <section class="slide hero active"></section>
+
+  <!-- 1. Başlık -->
+  <section class="slide hero">
+    <h1>Yazılım Ölecek mi?</h1>
+    <h3>Ve cevabının neden önemli olmadığı.</h3>
+  </section>
+
+  <!-- 2. Açılış sorusu -->
+  <section class="slide">
+    <h3 class="dim">Bir tahmin yapın:</h3>
+    <h2>"Programlama ölüyor" söylentisi<br>ilk ne zaman başladı?</h2>
+    <ul style="margin-top: 2rem; font-size: 1.3em;">
+      <li>2022 — ChatGPT çıktığında mı?</li>
+      <li>2015 — No-code araçlar mı?</li>
+      <li>1995 — Visual Basic mi?</li>
+      <li>1985 — 4GL dilleri mi?</li>
+      <li>Daha eski mi?</li>
+    </ul>
+  </section>
+
+  <!-- 3. Grafik -->
+  <section class="slide graph-slide">
+    <h2>"Programlama ölüyor" — Bir tarihçe</h2>
+    <img src="code-per-year-graph.svg" alt="1950'den günümüze yıllık yazılan kod satırı">
+  </section>
+
+  <!-- 4. Memeler -->
+  <section class="slide">
+    <h2>Her yıl birisi bir teknolojiyi "ölmüş" ilan ediyor</h2>
+    <img class="meme-big" src="assets/php-was-dead-10-years-ago.png" alt="PHP 10 yıl önce de ölmüştü memesi">
+    <p class="subtle">PHP hâlâ webin <strong>%77</strong>'sini çalıştırıyor · WordPress internetin <strong>%43</strong>'ünde · Siz de şu anda bu alanda okuyorsunuz.</p>
+  </section>
+
+  <!-- 5. Büyük soru -->
+  <section class="slide">
+    <h3 class="dim">Yazılım ölmüyor.</h3>
+    <h1 class="big">Peki 70 yıldır<br><em>kim</em> ölüyor?</h1>
+  </section>
+
+  <!-- 6. Kalıp -->
+  <section class="slide">
+    <h2>Bu kalıp 70 yaşında</h2>
+    <ul>
+      <li>FORTRAN'ı reddeden Assembly fanatikleri</li>
+      <li>PC'yi reddeden mainframe geliştiricileri</li>
+      <li>Web'i reddeden masaüstü geliştiricileri</li>
+      <li>React'i reddeden jQuery geliştiricileri</li>
+      <li>Docker'ı reddeden manuel deploy yapanlar</li>
+    </ul>
+    <p class="big">Onları yeni teknoloji değil,<br><span class="pink">yerinde durmak</span> öldürdü.</p>
+  </section>
+
+  <!-- 7. Gerçek tehdit -->
+  <section class="slide quote-slide">
+    <blockquote>
+      İşinizi AI'ya kaybetmeyeceksiniz.<br><br>
+      İşinizi, AI'ı sizden <em>daha hızlı öğrenmiş</em> bir yazılımcıya kaybedeceksiniz.
+    </blockquote>
+  </section>
+
+  <!-- 8. Plot twist -->
+  <section class="slide">
+    <h3 class="dim">Asıl soru hiçbir zaman şu değildi:</h3>
+    <h2>"Yazılım ölecek mi?"</h2>
+    <h3 class="dim">Gerçek soru şu:</h3>
+    <h1 class="big">Siz <em>meraklı</em> kalacak mısınız?</h1>
+    <p class="subtle">Bu bir seçim. Bir tahmin değil. Kontrol sizde.</p>
+  </section>
+
+  <!-- 9. Tek beceri -->
+  <section class="slide">
+    <h3 class="dim">Framework'ler değişir. Diller gelip geçer.<br>İlk işinizdeki teknoloji yığını, 4. işinize kalmadan ölecek.</h3>
+    <h2>Eskimeyen tek bir beceri var:</h2>
+    <p class="big">Öğrenmeyi öğrenmek.</p>
+  </section>
+
+  <!-- 10. 2 haftada öğrenme -->
+  <section class="slide">
+    <h1>Yeni bir teknolojiyi<br>nasıl öğrenirsiniz?</h1>
+  </section>
+
+  <!-- 11. Ne öğreniyorum -->
+  <section class="slide">
+    <h2>Ben şu anda ne öğreniyorum?</h2>
+    <ul style="margin-top: 1.5rem;">
+      <li><code>gastown</code> adında bir repo</li>
+      <li>İletişim — gerçek "soft skills"</li>
+      <li>Bir kitap —</li>
+    </ul>
+    <div class="book" style="margin-top: 2rem;">
+      <img src="assets/vibe-coding-cover.jpg" alt="Vibe Coding kitap kapağı">
+      <div class="book-info">
+        <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">Vibe Coding</h2>
+        <p style="color: var(--text-dim);">Gene Kim &amp; Steve Yegge</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12. İletişim = AI becerisi -->
+  <section class="slide">
+    <h2 class="big">Sizi <em>insanlarla</em> iyi yapan beceri,<br>sizi <em>AI</em> ile de iyi yapar.</h2>
+    <p class="subtle" style="margin-top: 1rem;">Net soru sormak. Bağlam vermek. Neyi söylemeyeceğini bilmek.<br>
+    Bu bir prompt'tur. Bu bir PR review'dur. Bu bir PM görüşmesidir.</p>
+    <blockquote style="margin-top: 2.5rem;">İyi iletişim kuranları AI <em>süper-insan</em> yapar.<br>Kuramayanları — daha yüksek sesli yapar, daha iyi değil.</blockquote>
+  </section>
+
+  <!-- 14. Meydan okuma -->
+  <section class="slide">
+    <h3 class="dim">Bu dönem bitmeden önce:</h3>
+    <ol style="font-size: 1.3em;">
+      <li><strong>TEK bir şey yayınlayın</strong> — gerçek kullanıcıları olan. 10 kişi bile olur. Ev arkadaşınız bile.</li>
+      <li><strong>Müfredatınızda olmayan TEK bir teknoloji öğrenin.</strong></li>
+    </ol>
+    <p class="subtle" style="margin-top: 2rem;">Bunu mezun olmadan 8 kere yapın.</p>
+    <blockquote style="margin-top: 2rem;">AI sizi işsiz bırakır mı diye endişelenmenize gerek kalmayacak.<br><em>İşsiz kalanların yerine geçen kişi siz olacaksınız.</em></blockquote>
+  </section>
+
+  <!-- 15. GitHub Student Developer Pack -->
+  <section class="slide">
+    <div class="pack-layout">
+      <div class="pack-left">
+        <div class="pack-header">
+          <img src="assets/github-mark.png" alt="GitHub logo" class="gh-logo">
+          <h1>Student Developer Pack</h1>
+        </div>
+        <table>
+          <tr><td>GitHub Copilot</td><td><strong class="pink">Ücretsiz</strong></td></tr>
+          <tr><td>DigitalOcean</td><td><strong class="pink">200$ kredi</strong></td></tr>
+          <tr><td>JetBrains IDE'leri</td><td><strong class="pink">Hepsi ücretsiz</strong></td></tr>
+          <tr><td>Namecheap domain</td><td><strong class="pink">1 yıl ücretsiz</strong></td></tr>
+          <tr><td>Microsoft Azure</td><td><strong class="pink">100$ kredi</strong></td></tr>
+          <tr><td>MongoDB Atlas</td><td><strong class="pink">50$ kredi</strong></td></tr>
+          <tr><td>Canva · 1Password · Sentry…</td><td><strong class="pink">Ücretsiz</strong></td></tr>
+        </table>
+      </div>
+      <div class="qr-block">
+        <img src="assets/github-pack-qr.png" alt="education.github.com/pack QR kodu">
+        <code>education.github.com/pack</code>
+      </div>
+    </div>
+  </section>
+
+  <!-- 18. Teşekkürler -->
+  <section class="slide hero">
+    <h1>Teşekkürler.</h1>
+    <p class="subtle">Şimdi gidip bir şey yapın.</p>
+  </section>
+
+  <!-- 19. DVD screensaver bitirici -->
+  <section class="slide dvd-slide">
+    <div id="dvd-text">learn English</div>
+  </section>
+
+</div>
+
+<!-- Flying English reminder -->
+<div id="flyer"></div>
+
+<div class="hint">
+  <kbd>←</kbd> <kbd>→</kbd> gezinme &nbsp;·&nbsp; <kbd>F</kbd> tam ekran &nbsp;·&nbsp; <kbd>Home</kbd>/<kbd>End</kbd> atla
+</div>
+
+<div class="nav">
+  <button id="prev" aria-label="önceki">‹</button>
+  <span class="counter"><span id="curr">1</span> / <span id="total">18</span></span>
+  <button id="next" aria-label="sonraki">›</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let idx = 0;
+
+  document.getElementById('total').textContent = total;
+
+  let autoAdvanceTimer = null;
+  function show(n) {
+    idx = Math.max(0, Math.min(total - 1, n));
+    slides.forEach((s, i) => s.classList.toggle('active', i === idx));
+    document.getElementById('curr').textContent = idx + 1;
+    document.getElementById('progress').style.width = ((idx + 1) / total * 100) + '%';
+    try { localStorage.setItem('slide-idx', idx); } catch(e) {}
+    // Auto-advance from Teşekkürler to DVD after 10s
+    if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null; }
+    if (idx === total - 2) {
+      autoAdvanceTimer = setTimeout(() => show(total - 1), 10000);
+    }
+  }
+
+  try {
+    const saved = parseInt(localStorage.getItem('slide-idx'));
+    if (!isNaN(saved)) show(saved);
+    else show(0);
+  } catch(e) { show(0); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { show(idx + 1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { show(idx - 1); e.preventDefault(); }
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(total - 1);
+    else if (e.key === 'f' || e.key === 'F') {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+  });
+
+  document.getElementById('next').addEventListener('click', () => show(idx + 1));
+  document.getElementById('prev').addEventListener('click', () => show(idx - 1));
+
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX);
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].screenX - touchStartX;
+    if (Math.abs(dx) < 50) return;
+    show(idx + (dx < 0 ? 1 : -1));
+  });
+
+  // DVD screensaver — bouncing text on the last slide
+  (function() {
+    const dvd = document.getElementById('dvd-text');
+    if (!dvd) return;
+    const slide = dvd.parentElement;
+    const colors = ['#ff5e8a', '#2563eb', '#22c55e', '#f59e0b', '#a855f7', '#06b6d4', '#ef4444', '#ec4899', '#14b8a6'];
+    let x = 100, y = 100;
+    let vx = 3.2, vy = 2.6;
+    let cornerFlash = 0;
+    let raf = null;
+
+    function randomColor() {
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    function step() {
+      if (!slide.classList.contains('active')) { raf = null; return; }
+      const W = slide.clientWidth;
+      const H = slide.clientHeight;
+      const w = dvd.offsetWidth;
+      const h = dvd.offsetHeight;
+
+      x += vx;
+      y += vy;
+
+      let hitX = false, hitY = false;
+      if (x <= 0) { x = 0; vx = Math.abs(vx); hitX = true; }
+      else if (x + w >= W) { x = W - w; vx = -Math.abs(vx); hitX = true; }
+      if (y <= 0) { y = 0; vy = Math.abs(vy); hitY = true; }
+      else if (y + h >= H) { y = H - h; vy = -Math.abs(vy); hitY = true; }
+
+      if (hitX || hitY) dvd.style.color = randomColor();
+      if (hitX && hitY) {
+        cornerFlash = 20;
+      }
+      if (cornerFlash > 0) {
+        dvd.style.textShadow = `0 0 ${cornerFlash * 2}px currentColor`;
+        cornerFlash--;
+      } else {
+        dvd.style.textShadow = '';
+      }
+
+      dvd.style.transform = `translate(${x}px, ${y}px)`;
+      raf = requestAnimationFrame(step);
+    }
+
+    function start() {
+      if (raf) return;
+      // Re-seed position within bounds on (re)start
+      const W = slide.clientWidth || window.innerWidth;
+      const H = slide.clientHeight || window.innerHeight;
+      const w = dvd.offsetWidth || 300;
+      const h = dvd.offsetHeight || 80;
+      x = Math.random() * Math.max(1, W - w);
+      y = Math.random() * Math.max(1, H - h);
+      vx = (Math.random() < 0.5 ? -1 : 1) * (2.8 + Math.random() * 1.5);
+      vy = (Math.random() < 0.5 ? -1 : 1) * (2.3 + Math.random() * 1.2);
+      dvd.style.color = randomColor();
+      raf = requestAnimationFrame(step);
+    }
+
+    // Observe when this slide becomes active
+    const obs = new MutationObserver(() => {
+      if (slide.classList.contains('active')) start();
+    });
+    obs.observe(slide, { attributes: true, attributeFilter: ['class'] });
+
+    // If already active on load
+    if (slide.classList.contains('active')) start();
+  })();
+
+  // Flying English reminder — random message + random animation, 30–60s apart
+  (function() {
+    const flyer = document.getElementById('flyer');
+    const messages = [
+      '<span class="accent">learn English</span>',
+      '<span class="accent">İngilizce öğren</span>'
+    ];
+    const animations = [
+      { name: 'fly-diag',    dur: 3500 },
+      { name: 'fly-sweep',   dur: 4000 },
+      { name: 'fly-drop',    dur: 4000 },
+      { name: 'fly-spiral',  dur: 3500 },
+      { name: 'fly-bounce',  dur: 3800 },
+      { name: 'fly-shake',   dur: 3000 },
+      { name: 'fly-loop',    dur: 4500 }
+    ];
+
+    function fly() {
+      const msg = messages[Math.floor(Math.random() * messages.length)];
+      const anim = animations[Math.floor(Math.random() * animations.length)];
+      flyer.innerHTML = msg;
+      flyer.style.animation = 'none';
+      // Force reflow so animation restarts
+      void flyer.offsetWidth;
+      flyer.style.animation = `${anim.name} ${anim.dur}ms ease-in-out forwards`;
+      setTimeout(schedule, anim.dur + 200);
+    }
+
+    function schedule() {
+      // 30–60 seconds randomly
+      const delay = 30000 + Math.random() * 30000;
+      setTimeout(fly, delay);
+    }
+
+    // First appearance after 20–40 seconds
+    setTimeout(fly, 20000 + Math.random() * 20000);
+  })();
+</script>
+
+</body>
+</html>

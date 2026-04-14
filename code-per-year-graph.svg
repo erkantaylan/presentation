@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" font-family="'Helvetica Neue', Arial, sans-serif">
+  <!-- Background -->
+  <rect width="1200" height="720" fill="#0f1115"/>
+
+  <!-- Title -->
+  <text x="600" y="40" text-anchor="middle" fill="#f5f5f5" font-size="26" font-weight="700">Yıllara Göre Dünyada Yazılan Kod Satırları</text>
+  <text x="600" y="66" text-anchor="middle" fill="#8a8f98" font-size="14">"Programlama ölüyor" dedikleri her seferde eğri yukarı çıktı. (log ölçeği)</text>
+
+  <!-- Plot area rectangle for reference -->
+  <rect x="100" y="90" width="1050" height="520" fill="#14171d" stroke="#2a2f38" stroke-width="1"/>
+
+  <!-- Y-axis gridlines & labels (log scale: 0.001 to 1000 billion) -->
+  <g stroke="#242931" stroke-dasharray="2,3">
+    <line x1="100" y1="610" x2="1150" y2="610"/>
+    <line x1="100" y1="524" x2="1150" y2="524"/>
+    <line x1="100" y1="437" x2="1150" y2="437"/>
+    <line x1="100" y1="350" x2="1150" y2="350"/>
+    <line x1="100" y1="263" x2="1150" y2="263"/>
+    <line x1="100" y1="177" x2="1150" y2="177"/>
+    <line x1="100" y1="90"  x2="1150" y2="90"/>
+  </g>
+  <g fill="#8a8f98" font-size="11" text-anchor="end">
+    <text x="92" y="614">1 Mn</text>
+    <text x="92" y="528">10 Mn</text>
+    <text x="92" y="441">100 Mn</text>
+    <text x="92" y="354">1 Mr</text>
+    <text x="92" y="267">10 Mr</text>
+    <text x="92" y="181">100 Mr</text>
+    <text x="92" y="94">1 Tr</text>
+  </g>
+  <text x="40" y="350" fill="#c5c9d1" font-size="13" text-anchor="middle" transform="rotate(-90 40 350)">Yıllık kod satırı (log ölçeği) · Mn=milyon, Mr=milyar, Tr=trilyon</text>
+
+  <!-- X-axis ticks -->
+  <g stroke="#2a2f38">
+    <line x1="240" y1="610" x2="240" y2="615"/>
+    <line x1="380" y1="610" x2="380" y2="615"/>
+    <line x1="520" y1="610" x2="520" y2="615"/>
+    <line x1="660" y1="610" x2="660" y2="615"/>
+    <line x1="800" y1="610" x2="800" y2="615"/>
+    <line x1="940" y1="610" x2="940" y2="615"/>
+    <line x1="1080" y1="610" x2="1080" y2="615"/>
+  </g>
+  <g fill="#8a8f98" font-size="12" text-anchor="middle">
+    <text x="100" y="632">1950</text>
+    <text x="240" y="632">1960</text>
+    <text x="380" y="632">1970</text>
+    <text x="520" y="632">1980</text>
+    <text x="660" y="632">1990</text>
+    <text x="800" y="632">2000</text>
+    <text x="940" y="632">2010</text>
+    <text x="1080" y="632">2020</text>
+  </g>
+
+  <!-- Main human-code curve -->
+  <polyline fill="none" stroke="#4ea1ff" stroke-width="3" stroke-linejoin="round"
+    points="170,600 240,399 380,334 520,265 660,199 800,168 940,141 1052,125 1080,121 1122,117 1136,108 1150,105"/>
+
+  <!-- AI-generated code overlay (2022 onward) -->
+  <polyline fill="none" stroke="#ff5e8a" stroke-width="3" stroke-linejoin="round" stroke-dasharray="6,4"
+    points="1108,350 1122,160 1136,93 1150,90"/>
+
+  <!-- Data point dots -->
+  <g fill="#4ea1ff">
+    <circle cx="170" cy="600" r="4"/>
+    <circle cx="240" cy="399" r="4"/>
+    <circle cx="380" cy="334" r="4"/>
+    <circle cx="520" cy="265" r="4"/>
+    <circle cx="660" cy="199" r="4"/>
+    <circle cx="800" cy="168" r="4"/>
+    <circle cx="940" cy="141" r="4"/>
+    <circle cx="1052" cy="125" r="4"/>
+    <circle cx="1080" cy="121" r="4"/>
+    <circle cx="1122" cy="117" r="4"/>
+    <circle cx="1150" cy="105" r="4"/>
+  </g>
+
+  <!-- Panic-moment annotations (vertical markers + labels) -->
+  <g stroke="#ffb547" stroke-width="1" stroke-dasharray="3,3" opacity="0.6">
+    <line x1="198" y1="90" x2="198" y2="610"/>
+    <line x1="310" y1="90" x2="310" y2="610"/>
+    <line x1="590" y1="90" x2="590" y2="610"/>
+    <line x1="730" y1="90" x2="730" y2="610"/>
+    <line x1="912" y1="90" x2="912" y2="610"/>
+    <line x1="1038" y1="90" x2="1038" y2="610"/>
+    <line x1="1108" y1="90" x2="1108" y2="610"/>
+  </g>
+
+  <g fill="#ffb547" font-size="11" font-weight="600">
+    <text x="202" y="105">1957 FORTRAN</text>
+    <text x="202" y="119" fill="#8a8f98" font-weight="400" font-size="10">"programcının sonu"</text>
+
+    <text x="314" y="140">1965 COBOL</text>
+    <text x="314" y="154" fill="#8a8f98" font-weight="400" font-size="10">"yöneticiler kod yazacak"</text>
+
+    <text x="594" y="175">1985 4GL</text>
+    <text x="594" y="189" fill="#8a8f98" font-weight="400" font-size="10">"1995'te kodlama ölecek"</text>
+
+    <text x="734" y="210">1995 Visual Basic</text>
+    <text x="734" y="224" fill="#8a8f98" font-weight="400" font-size="10">"sürükle-bırak yazılımcıyı bitirir"</text>
+
+    <text x="770" y="260" text-anchor="end">2003 Offshoring</text>
+    <text x="770" y="274" text-anchor="end" fill="#8a8f98" font-weight="400" font-size="10">"tüm işler yurt dışına gidiyor"</text>
+
+    <text x="900" y="300" text-anchor="end">2017 No-code</text>
+    <text x="900" y="314" text-anchor="end" fill="#8a8f98" font-weight="400" font-size="10">"programlamanın sonu"</text>
+
+    <text x="1100" y="380" text-anchor="end">2022 ChatGPT</text>
+    <text x="1100" y="394" text-anchor="end" fill="#8a8f98" font-weight="400" font-size="10">"junior'lar bitti"</text>
+  </g>
+
+  <!-- AI spike callout -->
+  <g>
+    <text x="1145" y="75" text-anchor="end" fill="#ff5e8a" font-size="13" font-weight="700">AI tarafından üretilen kod</text>
+    <text x="1145" y="88" text-anchor="end" fill="#ff5e8a" font-size="11">Sadece 2024'te 256 milyar satır</text>
+  </g>
+
+  <!-- Legend -->
+  <g transform="translate(910, 540)">
+    <rect x="0" y="0" width="250" height="58" fill="#14171d" stroke="#2a2f38"/>
+    <line x1="12" y1="20" x2="42" y2="20" stroke="#4ea1ff" stroke-width="3"/>
+    <text x="50" y="24" fill="#c5c9d1" font-size="12">İnsan tarafından yazılan (tahmini)</text>
+    <line x1="12" y1="42" x2="42" y2="42" stroke="#ff5e8a" stroke-width="3" stroke-dasharray="6,4"/>
+    <text x="50" y="46" fill="#c5c9d1" font-size="12">AI tarafından üretilen</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="100" y="690" fill="#6a6f78" font-size="10">Kaynaklar: Statista, SlashData, Evans Data, Elite Brains (AI verileri), Wikipedia (yazılım demografisi). Verimlilik ≈15–25k satır/geliştirici/yıl.</text>
+  <text x="100" y="705" fill="#6a6f78" font-size="10">Tahminî değerler — tam tarihsel veri mevcut değil. Y ekseni logaritmik: her çizgi bir alttakinin 10 katı.</text>
+</svg>
